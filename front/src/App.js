@@ -1,14 +1,27 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
   let [input, setInput] = useState({ title: "", content: "" });
+  let [posts, setPosts] = useState();
 
   function updateContent(event) {
     setInput((old) => {
       return { ...old, [event.target.name]: event.target.value };
     });
   }
+
+  const getApiData = async ()=>{
+    const response = await fetch('/messages').then((response)=>response.json());
+    setPosts(response);
+  }
+
+  useEffect(() => {
+    getApiData();    
+    const interval = setInterval(() => {
+      getApiData();      
+    }, 10000);
+  }, []);
 
   function postMessage(event) {
     const requestOptions = {
@@ -17,8 +30,8 @@ function App() {
       body: JSON.stringify({ title: input.title, content: input.content })
     };
     fetch('/message', requestOptions)
-      //.then(response => response.json())
-      //.then(data => this.setState({ postId: data.id }));
+    setInput({ title: "", content: "" });
+    getApiData();
     event.preventDefault();
   }
 
@@ -30,6 +43,12 @@ function App() {
         <input value={input.content} onChange={updateContent} name='content' placeholder='Write a message...' rows='3' /><br />
         <button type='submit' onClick={postMessage}>Post</button>
       </form>
+      {posts && posts.map((post) => (
+        <div>
+          <h3>{post.title}</h3>
+          <p>{post.content}</p>
+        </div>
+      ))}
     </div>
   );
 }
