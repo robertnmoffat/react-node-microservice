@@ -1,5 +1,9 @@
 import './App.css';
-import { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import sdfklj from 'react-bootstrap/'
 
 function App() {
   let [input, setInput] = useState({ title: "", content: "" });
@@ -11,15 +15,15 @@ function App() {
     });
   }
 
-  const getApiData = async ()=>{
-    const response = await fetch('/messages').then((response)=>response.json());
+  const getApiData = async () => {
+    const response = await fetch('/messages').then((response) => response.json());
     setPosts(response);
   }
 
   useEffect(() => {
-    getApiData();    
+    getApiData();
     const interval = setInterval(() => {
-      getApiData();      
+      getApiData();
     }, 10000);
   }, []);
 
@@ -37,17 +41,19 @@ function App() {
 
   return (
     <div className="App">
-      <form action="../../message" method="post" className='form'>
-        <h2>Message</h2>
-        <input value={input.title} onChange={updateContent} name='title' placeholder='Title' /><br />
-        <input value={input.content} onChange={updateContent} name='content' placeholder='Write a message...' rows='3' /><br />
-        <button type='submit' onClick={postMessage}>Post</button>
-      </form>
-      {posts && posts.map((post) => (
-        <div>
+      <Container className='p-3 bg-light border w-50 form-group mt-5'>      
+        <form action="../../message" method="post" className='form'>
+          <h2>Message</h2>
+          <input className='m-1' value={input.title} onChange={updateContent} name='title' placeholder='Title' /><br />
+          <input className='m-1' value={input.content} onChange={updateContent} name='content' placeholder='Write a message...' rows='3' /><br />
+          <Button className='mt-2' type='submit' onClick={postMessage}>Post</Button>
+        </form>       
+      </Container>
+      {posts && posts.map((post, index) => (
+        <Container className='p-3 bg-light border w-50'>
           <h3>{post.title}</h3>
-          <p>{post.content}</p>
-        </div>
+          <p className='text-break'>{post.content}</p>
+        </Container>
       ))}
     </div>
   );
